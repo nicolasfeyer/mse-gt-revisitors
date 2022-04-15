@@ -4,16 +4,11 @@ using UnityEngine;
 
 public class Char1Behaviour : MonoBehaviour
 {
-
-
-    private static readonly int DOWN = 0;
-    private static readonly int UP = 1;
-    private static readonly int LEFT = 2;
-    private static readonly int RIGHT = 3;
-
+    private static readonly int LEFT = 0;
+    private static readonly int RIGHT = 1;
 
     public Rigidbody2D rb;
-    private bool[] pressed = new bool[4]; // down, up , left, right
+    private bool[] pressed = new bool[2]; // left, right
 
     void Start()
     {
@@ -22,8 +17,6 @@ public class Char1Behaviour : MonoBehaviour
 
     void Update()
     {
-        pressed[DOWN] = Input.GetKey("down");
-        pressed[UP] = Input.GetKey("up");
         pressed[LEFT] = Input.GetKey("left");
         pressed[RIGHT] = Input.GetKey("right");
     }
@@ -31,27 +24,21 @@ public class Char1Behaviour : MonoBehaviour
 
     void FixedUpdate()
     {
-
-        if (pressed[DOWN])
+        if (pressed[LEFT])
         {
-            rb.AddForce(Vector2.down * 10, ForceMode2D.Force);
-            pressed[DOWN] = false;
-        }
-        else if (pressed[UP])
-        {
-            rb.AddForce(Vector2.up * 20, ForceMode2D.Force);
-            pressed[UP] = false;
-        }
-        else if (pressed[LEFT])
-        {
-            rb.AddForce(Vector2.left * 10, ForceMode2D.Force);
-            pressed[LEFT] = false;
+            // Impulse to left direction
+            rb.AddForce(Vector2.left * 1, ForceMode2D.Impulse);
         }
         else if (pressed[RIGHT])
         {
-            rb.AddForce(Vector2.right * 10, ForceMode2D.Force);
-            pressed[RIGHT] = false;
+            // Impulse to right direction
+            rb.AddForce(Vector2.right * 1, ForceMode2D.Impulse);
         }
-
+        else
+        {
+            // The player don't move left or right, stop it immediatly
+            // TODO Later : Adapt here when we will implement jump and dash
+            rb.velocity = Vector3.zero;
+        }
     }
 }
