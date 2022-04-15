@@ -7,6 +7,15 @@ public class Char1Behaviour : MonoBehaviour
     private static readonly int LEFT = 0;
     private static readonly int RIGHT = 1;
 
+    private enum Mode
+    {
+        Sprint,
+        Jump,
+        Dash
+    }
+
+    private Mode current_mode = Mode.Sprint;
+
     public Rigidbody2D rb;
     private bool[] pressed = new bool[2]; // left, right
 
@@ -24,21 +33,32 @@ public class Char1Behaviour : MonoBehaviour
 
     void FixedUpdate()
     {
-        if (pressed[LEFT])
+        if (current_mode == Mode.Sprint)
         {
-            // Impulse to left direction
-            rb.AddForce(Vector2.left * 1, ForceMode2D.Impulse);
+            // Sprint mode : check left and right move
+            if (pressed[LEFT])
+            {
+                // Impulse to left direction
+                rb.AddForce(Vector2.left * 1, ForceMode2D.Impulse);
+            }
+            else if (pressed[RIGHT])
+            {
+                // Impulse to right direction
+                rb.AddForce(Vector2.right * 1, ForceMode2D.Impulse);
+            }
+            else
+            {
+                // The player don't move left or right, stop it immediatly
+                rb.velocity = Vector3.zero;
+            }
         }
-        else if (pressed[RIGHT])
+        else if (current_mode == Mode.Jump)
         {
-            // Impulse to right direction
-            rb.AddForce(Vector2.right * 1, ForceMode2D.Impulse);
+            // TODO
         }
-        else
+        else if (current_mode == Mode.Dash)
         {
-            // The player don't move left or right, stop it immediatly
-            // TODO Later : Adapt here when we will implement jump and dash
-            rb.velocity = Vector3.zero;
+            // TODO
         }
     }
 }
