@@ -252,7 +252,7 @@ public class Char1Behaviour : MonoBehaviour
     [SerializeField] private float playerSpeed = 15.0f;
     [SerializeField] private float jumpPower = 15.0f;
     [SerializeField] private float dashPower = 50.0f;
-
+    [SerializeField] private float maxsPeed = 50.0f;
     private bool initMove;
     private bool stoppedMoving;
     private Rigidbody2D _rb;
@@ -297,29 +297,21 @@ public class Char1Behaviour : MonoBehaviour
             isDoubleJumping = Input.GetKey(KeyCode.Space);
         }
 
-        if (leftPressed){
+        if (leftPressed && !rightPressed){
             forward = false;
             stoppedMoving =false;
-            if(string.Equals(btnPressed,"right") || string.Equals(btnPressed,"init")){
-                initMove = true;
-            }
-            
-             btnPressed = "left";
         }
             
-        if (rightPressed){
+        if (rightPressed && !leftPressed){
             forward = true;
             stoppedMoving =false;
-            if(string.Equals(btnPressed,"left") || string.Equals(btnPressed,"init")){
-                initMove = true;
-            }
-            btnPressed = "right";
         }
             
 
         if(!leftPressed && !rightPressed){
             stoppedMoving = true;
         }
+        if(rightPressed &&leftPressed)stoppedMoving =true;
     }
 
 
@@ -347,9 +339,8 @@ public class Char1Behaviour : MonoBehaviour
     {
         var horizontalInput = Input.GetAxisRaw("Horizontal");
         //_rb.velocity = new Vector2(horizontalInput * playerSpeed, _rb.velocity.y);
-        if(initMove){
+        if(_rb.velocity.magnitude  < maxsPeed ){
             _rb.AddForce(new Vector2((horizontalInput * playerSpeed),0));
-            initMove = false;
         }else if(stoppedMoving){
             float oldy =  _rb.velocity.y;
             _rb.velocity = new Vector2(0, oldy);//tres brut mais ok
