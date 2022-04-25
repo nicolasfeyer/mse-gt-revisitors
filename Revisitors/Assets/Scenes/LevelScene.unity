@@ -136,6 +136,8 @@ GameObject:
   - component: {fileID: 1436501271}
   - component: {fileID: 1436501272}
   - component: {fileID: 1436501273}
+  - component: {fileID: 1436501274}
+  - component: {fileID: 1436501275}
   m_Layer: 0
   m_Name: Square
   m_TagString: Untagged
@@ -239,7 +241,7 @@ Rigidbody2D:
   m_Mass: 1
   m_LinearDrag: 0
   m_AngularDrag: 0.05
-  m_GravityScale: 1
+  m_GravityScale: 3
   m_Material: {fileID: 0}
   m_Interpolate: 0
   m_SleepingMode: 1
@@ -271,6 +273,45 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 1, y: 1}
   m_EdgeRadius: 0
+--- !u!114 &1436501274
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1436501268}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a12fa262042dc4e72ba19e0236353418, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  isGoingRight: 0
+  isGrounded: 0
+  isAgainstWall: 0
+  isDashing: 0
+  canMove: 0
+  particles: {fileID: 0}
+  invertSprite: 0
+  dieSound: {fileID: 0}
+--- !u!95 &1436501275
+Animator:
+  serializedVersion: 3
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1436501268}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 778c2ce2b53ba64a28344943c6296e36, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorControllerStateOnDisable: 0
 --- !u!1 &1795726146
 GameObject:
   m_ObjectHideFlags: 0
