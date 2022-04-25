@@ -253,20 +253,32 @@ public class Char1Behaviour : MonoBehaviour
     [SerializeField] private float jumpPower = 15.0f;
     [SerializeField] private float dashPower = 50.0f;
 
-
+    private bool initMove;
+    private bool stoppedMoving;
     private Rigidbody2D _rb;
     private bool isGrounded;
     private static readonly int LEFT = 0;
     private static readonly int RIGHT = 1;
-    private static readonly int JUMP = 2;
     private static readonly int SHIFT = 3;
     private bool forward;
+    private bool isJumping;
+    private bool isDoubleJumping;
+    private bool canDash;
+    private bool hasJumped;
+    private bool hasDoubleJumped;
+    private float oldMvmt;
     private bool[] pressed = new bool[4]; // left, right, jump, shift
+    private bool leftPressed;
+    private bool rightPressed;
+    private bool oldLeftPressed;//true = right false = false
+    private bool oldRightPressed;//true = right false = false
+    private string btnPressed;
     private void Start()
     {
         _rb = GetComponent<Rigidbody2D>();
         if (_rb == null)
-        {
+        {   
+            btnPressed ="init";
             Debug.LogError("Player is missing a Rigidbody2D component");
         }
         forward = true;
@@ -274,24 +286,58 @@ public class Char1Behaviour : MonoBehaviour
 
     void Update()
     {
-        pressed[LEFT] = Input.GetKeyDown(KeyCode.LeftArrow);//Input.GetKey("left");
-        pressed[RIGHT] = Input.GetKeyDown(KeyCode.RightArrow);//Input.GetKey("right");
-        pressed[JUMP] = Input.GetKeyDown(KeyCode.Space);//Input.GetKey("space");
-        pressed[SHIFT] = Input.GetKeyDown(KeyCode.LeftShift);//Input.GetKey("left shift");
+        leftPressed =  Input.GetKey(KeyCode.LeftArrow);
+        rightPressed =  Input.GetKey(KeyCode.RightArrow);
 
-        if (pressed[LEFT])
+        if(isGrounded && !hasJumped){
+            isJumping =  Input.GetKeyDown(KeyCode.Space);
+            isGrounded=!isJumping;
+        }
+        if(hasJumped&&!hasDoubleJumped){
+            isDoubleJumping = Input.GetKey(KeyCode.Space);
+        }
+
+        if (leftPressed){
             forward = false;
-        if (pressed[RIGHT])
+            stoppedMoving =false;
+            if(string.Equals(btnPressed,"right") || string.Equals(btnPressed,"init")){
+                initMove = true;
+            }
+            
+             btnPressed = "left";
+        }
+            
+        if (rightPressed){
             forward = true;
+            stoppedMoving =false;
+            if(string.Equals(btnPressed,"left") || string.Equals(btnPressed,"init")){
+                initMove = true;
+            }
+            btnPressed = "right";
+        }
+            
+
+        if(!leftPressed && !rightPressed){
+            stoppedMoving = true;
+        }
     }
 
 
     private void FixedUpdate()
     {
+        
         MovePlayer();
-
-        if (pressed[JUMP] && isGrounded)
+        
+        if (isJumping){
             Jump();
+            isJumping = false;
+            hasJumped = true;
+        }
+        if (isDoubleJumping && !isGrounded){
+            Jump();
+            isDoubleJumping = false;
+            hasDoubleJumped = true;
+        }           
 
         if (pressed[SHIFT])
             Dash();
@@ -300,9 +346,19 @@ public class Char1Behaviour : MonoBehaviour
     private void MovePlayer()
     {
         var horizontalInput = Input.GetAxisRaw("Horizontal");
-        _rb.velocity = new Vector2(horizontalInput * playerSpeed, _rb.velocity.y);
+        //_rb.velocity = new Vector2(horizontalInput * playerSpeed, _rb.velocity.y);
+        if(initMove){
+            _rb.AddForce(new Vector2((horizontalInput * playerSpeed),0));
+            initMove = false;
+        }else if(stoppedMoving){
+            float oldy =  _rb.velocity.y;
+            _rb.velocity = new Vector2(0, oldy);//tres brut mais ok
+        }
+         
     }
-    private void Jump() => _rb.velocity = new Vector2(0, jumpPower);
+    private void Jump(){
+        _rb.AddForce(new Vector2(0,jumpPower)); 
+    }
 
     private void Dash() => _rb.velocity = new Vector2((forward ? 1 : -1) * dashPower, _rb.velocity.y);
 
@@ -310,7 +366,11 @@ public class Char1Behaviour : MonoBehaviour
     void OnCollisionEnter2D(Collision2D collision)
     {
         if ((collision.gameObject.name == "Ground"))
+            isJumping = false;
+            isDoubleJumping = false;
             isGrounded = true;
+            hasJumped = false;
+            hasDoubleJumped = false;
     }
 
     void OnCollisionExit2D(Collision2D collision)
