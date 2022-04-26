@@ -356,7 +356,7 @@ public class Char1Behaviour : MonoBehaviour
 
     void OnCollisionEnter2D(Collision2D collision)
     {
-        if ((collision.gameObject.name == "Ground"))
+        if ((collision.gameObject.name == "Ground")) //&& collision.GetContact(0).normal == Vector2.up
             isJumping = false;
             isDoubleJumping = false;
             isGrounded = true;
