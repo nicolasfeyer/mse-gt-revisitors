@@ -257,8 +257,8 @@ public class Char1Behaviour : MonoBehaviour
     private bool stoppedMoving;
     private Rigidbody2D _rb;
     private bool isGrounded;
-    private static readonly int LEFT = 0;
-    private static readonly int RIGHT = 1;
+    //private static readonly int LEFT = 0;
+    //private static readonly int RIGHT = 1;
     private static readonly int SHIFT = 3;
     private bool forward;
     private bool isJumping;
@@ -272,13 +272,13 @@ public class Char1Behaviour : MonoBehaviour
     private bool rightPressed;
     private bool oldLeftPressed;//true = right false = false
     private bool oldRightPressed;//true = right false = false
-    private string btnPressed;
+    //private string btnPressed;
     private void Start()
     {
         _rb = GetComponent<Rigidbody2D>();
         if (_rb == null)
         {   
-            btnPressed ="init";
+            //btnPressed ="init";
             Debug.LogError("Player is missing a Rigidbody2D component");
         }
         forward = true;
