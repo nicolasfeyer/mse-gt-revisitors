@@ -356,12 +356,16 @@ public class Char1Behaviour : MonoBehaviour
 
     void OnCollisionEnter2D(Collision2D collision)
     {
-        if ((collision.gameObject.name == "Ground")) //&& collision.GetContact(0).normal == Vector2.up
+        Debug.Log(collision.gameObject.name);
+        if ((collision.gameObject.name == "collGround")) {//&& collision.GetContact(0).normal == Vector2.up
             isJumping = false;
             isDoubleJumping = false;
             isGrounded = true;
             hasJumped = false;
             hasDoubleJumped = false;
+        }else if ((collision.gameObject.name == "bottle")){
+            Debug.Log("END GAME");
+        }
     }
 
     void OnCollisionExit2D(Collision2D collision)
