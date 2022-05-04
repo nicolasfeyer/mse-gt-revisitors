@@ -11,12 +11,12 @@ TagManager:
   - 
   - Water
   - UI
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
+  - Ennemies
+  - Player
+  - Ground
+  - Checkpoint
+  - GroundDetector
+  - KillingObstacle
   - 
   - 
   - 
