@@ -33,7 +33,7 @@ public class GameManager : MonoBehaviour
     }
 
     private void Start() {
-        panel.gameObject.SetActive(false);
+        panel.gameObject.SetActive(true);
         cam = Camera.main;
         checkpointId = 0;
         allCheckpoints = FindObjectOfType<AllCheckpoint>();
