@@ -1,8 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Photon.Pun;
 
-public class PlayerMovement : MonoBehaviour, IOnPlayerDeath {
+public class PlayerMovement : MonoBehaviourPunCallbacks, IOnPlayerDeath {
     [Header("Movment")]
     [SerializeField] private float maxSpeed;
     [SerializeField] private float groundAcc;
@@ -56,6 +57,10 @@ public class PlayerMovement : MonoBehaviour, IOnPlayerDeath {
     }
 
     private void FixedUpdate() {
+        if (photonView.IsMine == false && PhotonNetwork.IsConnected == true)
+        {
+            return;
+        }
         if(ctrl.CanMove) {
             Gravity();
             Move();
@@ -67,6 +72,10 @@ public class PlayerMovement : MonoBehaviour, IOnPlayerDeath {
     }
 
     private void Update() {
+        if (photonView.IsMine == false && PhotonNetwork.IsConnected == true)
+        {
+            return;
+        }
         if (ctrl.CanMove) {
             Dash();
             Jump();

@@ -11,7 +11,6 @@ public class Launcher : MonoBehaviourPunCallbacks
     [SerializeField]
     private byte maxPlayersPerRoom = 2;
 
-
     #region Private Serializable Fields
 
 
@@ -132,11 +131,47 @@ public class Launcher : MonoBehaviourPunCallbacks
         // #Critical: we failed to join a random room, maybe none exists or they are all full. No worries, we create a new room.
         PhotonNetwork.CreateRoom(null, new RoomOptions { MaxPlayers = maxPlayersPerRoom });
     }
-
+    //quand on rentre
     public override void OnJoinedRoom()
     {
         Debug.Log("PUN Basics Tutorial/Launcher: OnJoinedRoom() called by PUN. Now this client is in a room.");
     }
+
+    #region Photon Callbacks
+
+    //quand un autre rentre
+    public override void OnPlayerEnteredRoom(Player other)
+    {
+        Debug.LogFormat("OnPlayerEnteredRoom() {0}", other.NickName); // not seen if you're the player connecting
+
+        if (PhotonNetwork.CurrentRoom.PlayerCount == maxPlayersPerRoom)
+        {
+            Debug.Log("START THE GAME");
+            if (PhotonNetwork.IsMasterClient)
+            {
+                Debug.LogFormat("OnPlayerEnteredRoom IsMasterClient {0}", PhotonNetwork.IsMasterClient); // called before OnPlayerLeftRoom
+                PhotonNetwork.LoadLevel("SceneAPASTOUCHER");
+            }
+            
+        }
+
+
+    }
+
+
+    public override void OnPlayerLeftRoom(Player other)
+    {
+        Debug.LogFormat("OnPlayerLeftRoom() {0}", other.NickName); // seen when other disconnects
+
+
+        if (PhotonNetwork.IsMasterClient)
+        {
+            Debug.LogFormat("OnPlayerLeftRoom IsMasterClient {0}", PhotonNetwork.IsMasterClient); // called before OnPlayerLeftRoom
+        }
+    }
+
+
+    #endregion
 
 
 }

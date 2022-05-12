@@ -2,8 +2,9 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Photon.Pun;
 
-public class PlayerCtrl : MonoBehaviour
+public class PlayerCtrl : MonoBehaviourPunCallbacks
 {
 #if UNITY_EDITOR
     [SerializeField] private bool isGoingRight;
@@ -29,14 +30,20 @@ public class PlayerCtrl : MonoBehaviour
 
     private List<IOnPlayerDeath> onPlayerDeads = new List<IOnPlayerDeath>();
 
-    private void Awake() {
+    private void Awake()
+    {
         spriteRenderer = GetComponent<SpriteRenderer>();
         particles = GetComponentInChildren<ParticleSystem>();
         //spriteRenderer.flipX = invertSprite ? IsGoingRight : !IsGoingRight;
         CanMove = true;
     }
 
-    private void LateUpdate() {
+    private void LateUpdate()
+    {
+        if (photonView.IsMine == false && PhotonNetwork.IsConnected == true)
+        {
+            return;
+        }
 #if UNITY_EDITOR
         isGoingRight = IsGoingRight;
         isGrounded = IsGrounded;
@@ -45,23 +52,31 @@ public class PlayerCtrl : MonoBehaviour
         canMove = CanMove;
 #endif
 
-        if (IsGoingRight != wasGoingRight) {
+        if (IsGoingRight != wasGoingRight)
+        {
             spriteRenderer.flipX = invertSprite ? IsGoingRight : !IsGoingRight;
             wasGoingRight = IsGoingRight;
         }
     }
 
-    private void Update() {
+    private void Update()
+    {
+        if (photonView.IsMine == false && PhotonNetwork.IsConnected == true)
+        {
+            return;
+        }
         if (Input.GetKeyDown(KeyCode.R))
             OnDead();
     }
 
-    public void SetDirectionRight(bool isRight) {
+    public void SetDirectionRight(bool isRight)
+    {
         IsGoingRight = isRight;
         spriteRenderer.flipX = invertSprite ? IsGoingRight : !IsGoingRight;
     }
 
-    private void OnDead() {
+    private void OnDead()
+    {
         CanMove = false;
         particles.Play();
         AudioSource.PlayClipAtPoint(dieSound, particles.transform.position);
@@ -70,11 +85,13 @@ public class PlayerCtrl : MonoBehaviour
         StartCoroutine(Respawn());
     }
 
-    public void EndGame() {
+    public void EndGame()
+    {
         CanMove = false;
     }
 
-    private IEnumerator Respawn() {
+    private IEnumerator Respawn()
+    {
         yield return new WaitForSeconds(particles.main.duration);
         GameManager.instance.RespawnPlayer();
         spriteRenderer.enabled = true;
@@ -82,28 +99,36 @@ public class PlayerCtrl : MonoBehaviour
         CanMove = true;
     }
 
-    public void Subscribe(IOnPlayerDeath sub) {
+    public void Subscribe(IOnPlayerDeath sub)
+    {
         onPlayerDeads.Add(sub);
     }
 
-    public void Unsubscribe(IOnPlayerDeath sub) {
+    public void Unsubscribe(IOnPlayerDeath sub)
+    {
         onPlayerDeads.Remove(sub);
     }
 
-    private void OnTriggerEnter2D(Collider2D collision) {
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
         PlayerKiller pk = collision.GetComponent<PlayerKiller>();
-        if (pk != null) {
+        if (pk != null)
+        {
             OnDead();
         }
     }
 
-    private void OnCollisionEnter2D(Collision2D collision) {
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
         Ennemy ennemy = collision.gameObject.GetComponent<Ennemy>();
-        if (ennemy != null) {
-            if(IsDashing) {
+        if (ennemy != null)
+        {
+            if (IsDashing)
+            {
                 ennemy.Die();
             }
-            else {
+            else
+            {
                 OnDead();
             }
         }
