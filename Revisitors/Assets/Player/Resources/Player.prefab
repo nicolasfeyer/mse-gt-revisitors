@@ -5281,6 +5281,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4a52102e8c456d845ab507a16df61c24, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  playerPrefab: {fileID: 6903101360349412643}
   isGoingRight: 0
   isGrounded: 0
   isAgainstWall: 0

@@ -167,11 +167,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7d50289ca15498221a9e76370cc0b511, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  playerPrefab: {fileID: 6903101360349412643, guid: b22a334e7bc2aad4ab0478eecc9acc38, type: 3}
   maxPlayersPerRoom: 2
   controlPanel: {fileID: 210290289}
   progressLabel: {fileID: 1558892587}
-  playBtn: {fileID: 0}
-  nameInputField: {fileID: 0}
+  playBtn: {fileID: 358460418}
+  nameInputField: {fileID: 1240054012}
 --- !u!1 &210290289
 GameObject:
   m_ObjectHideFlags: 0

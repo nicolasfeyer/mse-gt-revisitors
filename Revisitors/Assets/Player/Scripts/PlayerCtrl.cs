@@ -6,6 +6,8 @@ using Photon.Pun;
 
 public class PlayerCtrl : MonoBehaviourPunCallbacks
 {
+
+
 #if UNITY_EDITOR
     [SerializeField] private bool isGoingRight;
     [SerializeField] private bool isGrounded;
@@ -29,6 +31,8 @@ public class PlayerCtrl : MonoBehaviourPunCallbacks
     private SpriteRenderer spriteRenderer;
 
     private List<IOnPlayerDeath> onPlayerDeads = new List<IOnPlayerDeath>();
+
+
 
     private void Awake()
     {
