@@ -80,6 +80,12 @@ public class PlayerCtrl : MonoBehaviour
         spriteRenderer.enabled = true;
         particles.Stop();
         CanMove = true;
+
+        //GameObject[] li = UnityEngine.Object.FindObjectsOfType<WeakSpot>();
+        //foreach (var i in li)
+        //{
+        //    i.transform.parent.transform.SetActive(true);
+        //}
     }
 
     public void Subscribe(IOnPlayerDeath sub) {
