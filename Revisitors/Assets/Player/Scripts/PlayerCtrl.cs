@@ -12,10 +12,12 @@ public class PlayerCtrl : MonoBehaviour
     [SerializeField] private bool isDashing;
     [SerializeField] private bool canMove;
 #endif
+    [SerializeField] private EnnemiesController ennemiesController;
     [SerializeField] private ParticleSystem particles;
     [SerializeField] private bool invertSprite;
     [SerializeField] private AudioClip dieSound;
 
+    public bool CanDestroyObstacles { get; set; } = false;
     public bool IsGoingRight { get; private set; } = true;
     public bool IsGrounded { get; set; } = false;
     public bool IsAgainstWall { get; set; } = false;
@@ -26,12 +28,15 @@ public class PlayerCtrl : MonoBehaviour
 
     private bool wasGoingRight;
     private SpriteRenderer spriteRenderer;
-
+    private PiocheUI piocheUI;
     private List<IOnPlayerDeath> onPlayerDeads = new List<IOnPlayerDeath>();
 
     private void Awake() {
+        ennemiesController = FindObjectOfType<EnnemiesController>();
         spriteRenderer = GetComponent<SpriteRenderer>();
         particles = GetComponentInChildren<ParticleSystem>();
+        piocheUI = FindObjectOfType<PiocheUI>();
+        piocheUI.gameObject.SetActive(false);
         //spriteRenderer.flipX = invertSprite ? IsGoingRight : !IsGoingRight;
         CanMove = true;
     }
@@ -80,7 +85,7 @@ public class PlayerCtrl : MonoBehaviour
         spriteRenderer.enabled = true;
         particles.Stop();
         CanMove = true;
-
+        ennemiesController.ReactivateEnnemies();
         //GameObject[] li = UnityEngine.Object.FindObjectsOfType<WeakSpot>();
         //foreach (var i in li)
         //{
@@ -100,19 +105,16 @@ public class PlayerCtrl : MonoBehaviour
         PlayerKiller pk = collision.GetComponent<PlayerKiller>();
         if (pk != null) {
             OnDead();
+            return;
         }
-    }
 
-    private void OnCollisionEnter2D(Collision2D collision) {
-        Ennemy ennemy = collision.gameObject.GetComponent<Ennemy>();
-        if (ennemy != null) {
-            if(IsDashing) {
-                ennemy.Die();
-            }
-            else {
-                OnDead();
-            }
+        Pioche pioche = collision.GetComponent<Pioche>();
+        if (pioche != null) {
+            piocheUI.gameObject.SetActive(true);
+            pioche.gameObject.SetActive(false);
+            CanDestroyObstacles = true;
         }
+        
     }
 }
 
