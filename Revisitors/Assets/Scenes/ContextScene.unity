@@ -472,7 +472,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "Affronte les dangers de ce monte et peut-\xEAtre tu sauras retrouver la
+  m_text: "Affronte les dangers de ce monde et peut-\xEAtre tu sauras retrouver la
     potion qui te permettra de rentrer dans ton \xE9poque. Bonne chance"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
