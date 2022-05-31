@@ -37,9 +37,10 @@ public class GameManager : MonoBehaviour
         offset = new Vector3(cameraOffset.x, cameraOffset.y, -20);
     }
 
+
     private void Start()
-    {
-        panel.gameObject.SetActive(false);
+        panel.gameObject.SetActive(true);
+
         cam = Camera.main;
         checkpointId = 0;
         allCheckpoints = FindObjectOfType<AllCheckpoint>();

@@ -13,18 +13,25 @@ public class Breakable : MonoBehaviour
     private SpriteRenderer spriteRenderer;
     private ParticleSystem particles;
     private GameManager gameManager;
+    private NoPioche noPioche;
 
     private void Start() {
         gameManager = FindObjectOfType<GameManager>();
         coll = GetComponent<Collider2D>();
         spriteRenderer = GetComponent<SpriteRenderer>();
         particles = GetComponent<ParticleSystem>();
+        noPioche = FindObjectOfType<NoPioche>();
     }
 
     private void OnCollisionEnter2D(Collision2D collision) {
-        if(collision.gameObject.GetComponent<PlayerCtrl>()) {
-            willDestroy = true;
-            gameManager.onPlayerDead.AddListener(Reconstruct);
+        PlayerCtrl playerCtrl = collision.gameObject.GetComponent<PlayerCtrl>();
+        if(playerCtrl != null) {
+            if(playerCtrl.CanDestroyObstacles){
+                willDestroy = true;
+                gameManager.onPlayerDead.AddListener(Reconstruct);
+            } else {
+                noPioche.StartBlinking();
+            }
         }
     }
 

@@ -18,10 +18,12 @@ public class PlayerCtrl : MonoBehaviourPunCallbacks
     [SerializeField] private bool isDashing;
     [SerializeField] private bool canMove;
 #endif
+    [SerializeField] private EnnemiesController ennemiesController;
     [SerializeField] private ParticleSystem particles;
     [SerializeField] private bool invertSprite;
     [SerializeField] private AudioClip dieSound;
 
+    public bool CanDestroyObstacles { get; set; } = false;
     public bool IsGoingRight { get; private set; } = true;
     public bool IsGrounded { get; set; } = false;
     public bool IsAgainstWall { get; set; } = false;
@@ -32,15 +34,17 @@ public class PlayerCtrl : MonoBehaviourPunCallbacks
 
     private bool wasGoingRight;
     private SpriteRenderer spriteRenderer;
-
+    private PiocheUI piocheUI;
     private List<IOnPlayerDeath> onPlayerDeads = new List<IOnPlayerDeath>();
-
 
 
     private void Awake()
     {
+        ennemiesController = FindObjectOfType<EnnemiesController>();
         spriteRenderer = GetComponent<SpriteRenderer>();
         particles = GetComponentInChildren<ParticleSystem>();
+        piocheUI = FindObjectOfType<PiocheUI>();
+        piocheUI.gameObject.SetActive(false);
         //spriteRenderer.flipX = invertSprite ? IsGoingRight : !IsGoingRight;
         CanMove = true;
 
@@ -112,6 +116,12 @@ public class PlayerCtrl : MonoBehaviourPunCallbacks
         spriteRenderer.enabled = true;
         particles.Stop();
         CanMove = true;
+        ennemiesController.ReactivateEnnemies();
+        //GameObject[] li = UnityEngine.Object.FindObjectsOfType<WeakSpot>();
+        //foreach (var i in li)
+        //{
+        //    i.transform.parent.transform.SetActive(true);
+        //}
     }
 
     public void Subscribe(IOnPlayerDeath sub)
@@ -130,9 +140,10 @@ public class PlayerCtrl : MonoBehaviourPunCallbacks
         if (pk != null)
         {
             OnDead();
+            return;
         }
-    }
 
+<<<<<<< HEAD
     private void OnCollisionEnter2D(Collision2D collision)
     {
         Ennemy ennemy = collision.gameObject.GetComponent<Ennemy>();
@@ -146,7 +157,15 @@ public class PlayerCtrl : MonoBehaviourPunCallbacks
             {
                 OnDead();
             }
+=======
+        Pioche pioche = collision.GetComponent<Pioche>();
+        if (pioche != null) {
+            piocheUI.gameObject.SetActive(true);
+            pioche.gameObject.SetActive(false);
+            CanDestroyObstacles = true;
+>>>>>>> perso
         }
+        
     }
 }
 
