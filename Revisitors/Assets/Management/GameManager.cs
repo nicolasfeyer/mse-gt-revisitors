@@ -39,6 +39,7 @@ public class GameManager : MonoBehaviour
 
 
     private void Start()
+    {
         panel.gameObject.SetActive(true);
 
         cam = Camera.main;

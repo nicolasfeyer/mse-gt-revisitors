@@ -134,39 +134,22 @@ public class PlayerCtrl : MonoBehaviourPunCallbacks
         onPlayerDeads.Remove(sub);
     }
 
-    private void OnTriggerEnter2D(Collider2D collision)
-    {
+    private void OnTriggerEnter2D(Collider2D collision) {
         PlayerKiller pk = collision.GetComponent<PlayerKiller>();
-        if (pk != null)
-        {
+        if (pk != null) {
             OnDead();
             return;
         }
 
-<<<<<<< HEAD
-    private void OnCollisionEnter2D(Collision2D collision)
-    {
-        Ennemy ennemy = collision.gameObject.GetComponent<Ennemy>();
-        if (ennemy != null)
-        {
-            if (IsDashing)
-            {
-                ennemy.Die();
-            }
-            else
-            {
-                OnDead();
-            }
-=======
         Pioche pioche = collision.GetComponent<Pioche>();
         if (pioche != null) {
             piocheUI.gameObject.SetActive(true);
             pioche.gameObject.SetActive(false);
             CanDestroyObstacles = true;
->>>>>>> perso
         }
         
     }
+    
 }
 
 //interface IOnPlayerDead {
