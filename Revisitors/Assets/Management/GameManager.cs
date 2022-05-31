@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.SceneManagement;
+using Photon.Pun;
+using Photon.Realtime;
 
 public class GameManager : MonoBehaviour
 {
@@ -21,77 +23,113 @@ public class GameManager : MonoBehaviour
 
     bool isPause = false;
 
-    private void Awake() {
+    private void Awake()
+    {
         Cursor.visible = false;
-        if(instance == null) {
+        if (instance == null)
+        {
             instance = this;
         }
-        else {
+        else
+        {
             Destroy(this);
         }
         offset = new Vector3(cameraOffset.x, cameraOffset.y, -20);
     }
 
-    private void Start() {
+    private void Start()
+    {
         panel.gameObject.SetActive(false);
         cam = Camera.main;
         checkpointId = 0;
         allCheckpoints = FindObjectOfType<AllCheckpoint>();
-        GameObject playerGO = Instantiate(playerPrefab, allCheckpoints.GetCheckpoint(0).SpawnPoint.position, Quaternion.identity);
-        player = playerGO.GetComponent<PlayerCtrl>();
-        //player.IsGoingRight = allCheckpoints.GetCheckpoint(0).GoRight;
-        player.SetDirectionRight(allCheckpoints.GetCheckpoint(0).GoRight);
+        //GameObject playerGO = Instantiate(playerPrefab, allCheckpoints.GetCheckpoint(0).SpawnPoint.position, Quaternion.identity);
+
+        if (playerPrefab == null)
+        {
+            Debug.LogError("<Color=Red><a>Missing</a></Color> playerPrefab Reference. Please set it up in GameObject 'Game Manager'", this);
+        }
+        else
+        {
+            if (PlayerCtrl.LocalPlayerInstance == null)
+            {
+                Debug.LogFormat("We are Instantiating LocalPlayer from {0}", Application.loadedLevelName);
+                // we're in a room. spawn a character for the local player. it gets synced by using PhotonNetwork.Instantiate
+                GameObject playerGO = PhotonNetwork.Instantiate(this.playerPrefab.name, new Vector3(0f, 5f, 0f), Quaternion.identity, 0);
+                player = playerGO.GetComponent<PlayerCtrl>();
+                //player.IsGoingRight = allCheckpoints.GetCheckpoint(0).GoRight;
+                player.SetDirectionRight(allCheckpoints.GetCheckpoint(0).GoRight);
+            }
+            else
+            {
+                Debug.LogFormat("Ignoring scene load for {0}", SceneManagerHelper.ActiveSceneName);
+            }
+
+
+        }
     }
 
-    public void ChangeCheckpoint(int id) {
+    public void ChangeCheckpoint(int id)
+    {
         checkpointId = id;
     }
 
-    public void RespawnPlayer() {
+    public void RespawnPlayer()
+    {
         onPlayerDead.Invoke();
         player.transform.position = allCheckpoints.GetCheckpoint(checkpointId).SpawnPoint.position;
         //player.IsGoingRight = allCheckpoints.GetCheckpoint(checkpointId).GoRight;
         player.SetDirectionRight(allCheckpoints.GetCheckpoint(checkpointId).GoRight);
     }
 
-    public void EndGame() {
+    public void EndGame()
+    {
         player.EndGame();
 
         int currentSceneIndex = SceneManager.GetActiveScene().buildIndex;
         SceneManager.LoadScene(currentSceneIndex + 1);
     }
 
-    private void LateUpdate() {
-        if(cam != null && player != null) {
+    private void LateUpdate()
+    {
+        if (cam != null && player != null)
+        {
             cam.transform.position = player.transform.position + new Vector3(0f, 0f, -10f);
         }
     }
 
-    private void Update() {
-        if(Input.GetKeyDown(KeyCode.Escape)) {
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
             Pause();
         }
     }
 
-    public void Pause() {
+    public void Pause()
+    {
         isPause = !isPause;
-        if(isPause) {
+        if (isPause)
+        {
             Time.timeScale = 0f;
             panel.gameObject.SetActive(true);
             Cursor.visible = true;
         }
-        else {
+        else
+        {
             Time.timeScale = 1f;
             panel.gameObject.SetActive(false);
             Cursor.visible = false;
         }
     }
 
-    private void OnDestroy() {
+    private void OnDestroy()
+    {
         Cursor.visible = true;
     }
 
-    public void ReturnToMainMenu() {
+    public void ReturnToMainMenu()
+    {
         Time.timeScale = 1f;
         Cursor.visible = true;
         SceneManager.LoadScene(0);

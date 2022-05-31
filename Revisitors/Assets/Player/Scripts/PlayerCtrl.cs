@@ -8,6 +8,9 @@ public class PlayerCtrl : MonoBehaviourPunCallbacks
 {
 
 
+    [Tooltip("The local player instance. Use this to know if the local player is represented in the Scene")]
+    public static GameObject LocalPlayerInstance;
+
 #if UNITY_EDITOR
     [SerializeField] private bool isGoingRight;
     [SerializeField] private bool isGrounded;
@@ -40,6 +43,14 @@ public class PlayerCtrl : MonoBehaviourPunCallbacks
         particles = GetComponentInChildren<ParticleSystem>();
         //spriteRenderer.flipX = invertSprite ? IsGoingRight : !IsGoingRight;
         CanMove = true;
+
+        if (photonView.IsMine)
+        {
+            PlayerCtrl.LocalPlayerInstance = this.gameObject;
+        }
+        // #Critical
+        // we flag as don't destroy on load so that instance survives level synchronization, thus giving a seamless experience when levels load.
+        DontDestroyOnLoad(this.gameObject);
     }
 
     private void LateUpdate()

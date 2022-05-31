@@ -3,7 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
 
-public class PlayerMovement : MonoBehaviourPunCallbacks, IOnPlayerDeath {
+public class PlayerMovement : MonoBehaviourPunCallbacks, IOnPlayerDeath
+{
     [Header("Movment")]
     [SerializeField] private float maxSpeed;
     [SerializeField] private float groundAcc;
@@ -42,68 +43,82 @@ public class PlayerMovement : MonoBehaviourPunCallbacks, IOnPlayerDeath {
     private float dashTimer;
     private const string DASH_BUTTON = "Dash";
 
-    private void OnEnable() {
+    private void OnEnable()
+    {
         GetComponent<PlayerCtrl>().Subscribe(this);
     }
 
-    private void OnDisable() {
+    private void OnDisable()
+    {
         ctrl.Unsubscribe(this);
     }
 
-    void Start() {
+    void Start()
+    {
         ctrl = GetComponent<PlayerCtrl>();
         rb2d = GetComponent<Rigidbody2D>();
         animator = GetComponent<Animator>();
     }
 
-    private void FixedUpdate() {
+    private void FixedUpdate()
+    {
         if (photonView.IsMine == false && PhotonNetwork.IsConnected == true)
         {
             return;
         }
-        if(ctrl.CanMove) {
+        if (ctrl.CanMove)
+        {
             Gravity();
             Move();
         }
-        else {
+        else
+        {
             rb2d.velocity = Vector2.zero;
         }
 
     }
 
-    private void Update() {
+    private void Update()
+    {
         if (photonView.IsMine == false && PhotonNetwork.IsConnected == true)
         {
             return;
         }
-        if (ctrl.CanMove) {
+        if (ctrl.CanMove)
+        {
             Dash();
             Jump();
 
             UpdateAnimation();
             ctrl.Velocity = rb2d.velocity;
         }
-        else {
+        else
+        {
             animator.SetBool("IsGrounded", true);
             animator.SetFloat("VerticalSpeed", verticalSpeed);
             animator.SetFloat("HorizontalSpeed", 0f);
         }
     }
 
-    private void Gravity() {
-        if (ctrl.IsGrounded) {
+    private void Gravity()
+    {
+        if (ctrl.IsGrounded)
+        {
             verticalSpeed = 0f;
         }
 
         verticalSpeed -= gravityForce * Time.fixedDeltaTime;
 
-        if(ctrl.IsAgainstWall && verticalSpeed < -maxDownSpeedWall) {
+        if (ctrl.IsAgainstWall && verticalSpeed < -maxDownSpeedWall)
+        {
             verticalSpeed = -maxDownSpeedWall;
         }
     }
 
-    private void Move() {
-        if (ctrl.IsAgainstWall) {
+    private void Move()
+    {
+        if (ctrl.IsAgainstWall)
+        {
             horizontalSpeed = 0f;
         }
 
@@ -111,45 +126,55 @@ public class PlayerMovement : MonoBehaviourPunCallbacks, IOnPlayerDeath {
         float acceleration = ctrl.IsGrounded ? groundAcc : airAcc;
         horizontalSpeed = Mathf.MoveTowards(horizontalSpeed, targetSpeed, acceleration * Time.fixedDeltaTime);
 
-        if (isJumping) {
+        if (isJumping)
+        {
             verticalSpeed = jumpSpeed;
         }
 
         Vector2 velocity;
 
-        if (isDashing) {
-            if (dashDown) {
+        if (isDashing)
+        {
+            if (dashDown)
+            {
                 velocity = new Vector2(horizontalSpeed, -dashSpeed);
             }
-            else {
+            else
+            {
                 horizontalSpeed = ctrl.IsGoingRight ? dashSpeed : -dashSpeed;
                 velocity = new Vector2(horizontalSpeed, 0f);
             }
         }
-        else {
+        else
+        {
             velocity = new Vector2(horizontalSpeed, verticalSpeed);
         }
 
         rb2d.velocity = velocity;
     }
 
-    private void Jump() {
+    private void Jump()
+    {
         // Can't jump while dashing
         if (isDashing) return;
 
         // During jump
-        if (isJumping) {
+        if (isJumping)
+        {
             jumpTimer += Time.deltaTime;
             bool buttonDown = Input.GetButton(JUMP_BUTTON);
 
-            if (jumpTimer > jumpMaxDuration || !buttonDown) {
+            if (jumpTimer > jumpMaxDuration || !buttonDown)
+            {
                 isJumping = false;
                 verticalSpeed = endOfJumpSpeedReduction * verticalSpeed;
             }
         }
         // Start jump
-        else {
-            if (Input.GetButtonDown(JUMP_BUTTON) && ctrl.IsGrounded) {
+        else
+        {
+            if (Input.GetButtonDown(JUMP_BUTTON) && ctrl.IsGrounded)
+            {
                 jumpTimer = 0f;
                 isJumping = true;
                 animator.SetTrigger("Jump");
@@ -158,7 +183,8 @@ public class PlayerMovement : MonoBehaviourPunCallbacks, IOnPlayerDeath {
         }
 
         // Wall Jump
-        if (ctrl.IsAgainstWall && !ctrl.IsGrounded && Input.GetButtonDown(JUMP_BUTTON)) {
+        if (ctrl.IsAgainstWall && !ctrl.IsGrounded && Input.GetButtonDown(JUMP_BUTTON))
+        {
             jumpTimer = 0f;
             isJumping = true;
             ctrl.IsAgainstWall = false;
@@ -170,10 +196,13 @@ public class PlayerMovement : MonoBehaviourPunCallbacks, IOnPlayerDeath {
         }
     }
 
-    private void Dash() {
+    private void Dash()
+    {
         // Start dash
-        if (canDash && !isDashing) {
-            if (Input.GetButtonDown(DASH_BUTTON)) {
+        if (canDash && !isDashing)
+        {
+            if (Input.GetButtonDown(DASH_BUTTON))
+            {
                 isDashing = true;
                 canDash = false;
                 dashTimer = 0f;
@@ -182,9 +211,11 @@ public class PlayerMovement : MonoBehaviourPunCallbacks, IOnPlayerDeath {
             }
         }
         // During dash
-        if (isDashing) {
+        if (isDashing)
+        {
             // End of dash
-            if ((dashTimer > dashMaxDuration) || (dashTimer > dashMinDuration && !Input.GetButton(DASH_BUTTON))) {
+            if ((dashTimer > dashMaxDuration) || (dashTimer > dashMinDuration && !Input.GetButton(DASH_BUTTON)))
+            {
                 isDashing = false;
                 ctrl.IsDashing = false;
                 verticalSpeed = 0f;
@@ -194,21 +225,24 @@ public class PlayerMovement : MonoBehaviourPunCallbacks, IOnPlayerDeath {
         }
 
         // Enable dash
-        if (ctrl.IsGrounded || ctrl.IsAgainstWall) {
+        if (ctrl.IsGrounded || ctrl.IsAgainstWall)
+        {
             canDash = true;
         }
     }
 
-    private void UpdateAnimation() {
-        animator.SetBool("IsGrounded", ctrl.IsGrounded );
+    private void UpdateAnimation()
+    {
+        animator.SetBool("IsGrounded", ctrl.IsGrounded);
         //animator.SetBool("IsDashing", isDashing);
         animator.SetFloat("VerticalSpeed", verticalSpeed);
-        animator.SetFloat("HorizontalSpeed", ctrl.CanMove ? Mathf.Abs( horizontalSpeed) : 0f);
+        animator.SetFloat("HorizontalSpeed", ctrl.CanMove ? Mathf.Abs(horizontalSpeed) : 0f);
         //animator.SetFloat("HorizontalSpeed", Mathf.Abs(maxSpeed));
         animator.SetLayerWeight(1, isDashing ? 1f : 0f);
     }
 
-    public void OnPlayerDeath() {
+    public void OnPlayerDeath()
+    {
         verticalSpeed = 0f;
         horizontalSpeed = 0f;
         isJumping = false;

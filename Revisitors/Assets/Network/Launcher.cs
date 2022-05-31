@@ -7,10 +7,6 @@ using UnityEngine.UI;
 public class Launcher : MonoBehaviourPunCallbacks
 {
 
-
-    [Tooltip("The prefab to use for representing the player")]
-    public GameObject playerPrefab;
-
     [Tooltip("The maximum number of players per room. When a room is full, it can't be joined by new players, and so new room will be created")]
     [SerializeField]
     private byte maxPlayersPerRoom = 2;
@@ -156,20 +152,6 @@ public class Launcher : MonoBehaviourPunCallbacks
                 Debug.LogFormat("OnPlayerEnteredRoom IsMasterClient {0}", PhotonNetwork.IsMasterClient); // called before OnPlayerLeftRoom
 
                 PhotonNetwork.LoadLevel("SceneAPASTOUCHER");
-            }
-            if (playerPrefab == null)
-            {
-                Debug.LogError("<Color=Red><a>Missing</a></Color> playerPrefab Reference. Please set it up in GameObject 'Game Manager'", this);
-            }
-            else
-            {
-                DefaultPool newDefaultPool = new DefaultPool();
-                newDefaultPool.ResourceCache.Clear();
-                PhotonNetwork.PrefabPool = newDefaultPool;
-
-                Debug.LogFormat("We are Instantiating LocalPlayer from {0}", Application.loadedLevelName);
-                // we're in a room. spawn a character for the local player. it gets synced by using PhotonNetwork.Instantiate
-                PhotonNetwork.Instantiate(this.playerPrefab.name, new Vector3(0f, 5f, 0f), Quaternion.identity, 0);
             }
         }
     }
