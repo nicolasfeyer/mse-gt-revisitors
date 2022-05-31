@@ -5286,6 +5286,7 @@ MonoBehaviour:
   isAgainstWall: 0
   isDashing: 0
   canMove: 0
+  ennemiesController: {fileID: 0}
   particles: {fileID: 0}
   invertSprite: 1
   dieSound: {fileID: 8300000, guid: ed154c2a5849e4fb6b48d15dc096313d, type: 3}
