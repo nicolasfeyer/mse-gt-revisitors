@@ -45,7 +45,8 @@ public class PlayerCtrl : MonoBehaviourPunCallbacks
         spriteRenderer = GetComponent<SpriteRenderer>();
         particles = GetComponentInChildren<ParticleSystem>();
         piocheUI = FindObjectOfType<PiocheUI>();
-        piocheUI.gameObject.SetActive(false);
+        if(piocheUI != null)
+            piocheUI.gameObject.SetActive(false);
         //spriteRenderer.flipX = invertSprite ? IsGoingRight : !IsGoingRight;
         CanMove = true;
 

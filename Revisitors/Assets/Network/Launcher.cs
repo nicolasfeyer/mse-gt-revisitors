@@ -27,19 +27,19 @@ public class Launcher : MonoBehaviourPunCallbacks
 
     #endregion
 
-    [Tooltip("The Ui Panel to let the user enter name, connect and play")]
-    [SerializeField]
-    private GameObject controlPanel;
-    [Tooltip("The UI Label to inform the user that the connection is in progress")]
-    [SerializeField]
-    private GameObject progressLabel;
+    //[Tooltip("The Ui Panel to let the user enter name, connect and play")]
+    //[SerializeField]
+    //private GameObject controlPanel;
+    //[Tooltip("The UI Label to inform the user that the connection is in progress")]
+    //[SerializeField]
+    //private GameObject progressLabel;
 
 
     [SerializeField]
     private Button playBtn;
 
-    [SerializeField]
-    private InputField nameInputField;
+    //[SerializeField]
+    //private InputField nameInputField;
 
 
     #region MonoBehaviour CallBacks
@@ -62,7 +62,7 @@ public class Launcher : MonoBehaviourPunCallbacks
     void Start()
     {
         //Connect();
-        progressLabel.SetActive(false);
+        //progressLabel.SetActive(false);
         //controlPanel.SetActive(true);
     }
 
@@ -80,7 +80,7 @@ public class Launcher : MonoBehaviourPunCallbacks
     /// </summary>
     public void Connect()
     {
-        progressLabel.SetActive(true);
+        //progressLabel.SetActive(true);
         //playBtn.interactable = false;
         //nameInputField.interactable = false;
         //controlPanel.SetActive(false);
@@ -114,9 +114,9 @@ public class Launcher : MonoBehaviourPunCallbacks
     public override void OnDisconnected(DisconnectCause cause)
     {
         Debug.LogWarningFormat("PUN Basics Tutorial/Launcher: OnDisconnected() was called by PUN with reason {0}", cause);
-        progressLabel.SetActive(false);
+        //progressLabel.SetActive(false);
         playBtn.interactable = true;
-        nameInputField.interactable = true;
+        //nameInputField.interactable = true;
         //controlPanel.SetActive(true);
     }
 
@@ -151,7 +151,7 @@ public class Launcher : MonoBehaviourPunCallbacks
             {
                 Debug.LogFormat("OnPlayerEnteredRoom IsMasterClient {0}", PhotonNetwork.IsMasterClient); // called before OnPlayerLeftRoom
 
-                PhotonNetwork.LoadLevel("SceneAPASTOUCHER");
+                PhotonNetwork.LoadLevel("GameScene");
             }
         }
     }
