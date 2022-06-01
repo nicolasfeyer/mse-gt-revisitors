@@ -32,14 +32,15 @@ public class PlayerCtrl : MonoBehaviourPunCallbacks
 
     public Vector2 Velocity { get; set; }
 
+    private ScoreCtrl scoreCtrl;
     private bool wasGoingRight;
     private SpriteRenderer spriteRenderer;
     private PiocheUI piocheUI;
     private List<IOnPlayerDeath> onPlayerDeads = new List<IOnPlayerDeath>();
 
 
-    private void Awake()
-    {
+    private void Awake() {
+        scoreCtrl = FindObjectOfType<ScoreCtrl>();
         ennemiesController = FindObjectOfType<EnnemiesController>();
         spriteRenderer = GetComponent<SpriteRenderer>();
         particles = GetComponentInChildren<ParticleSystem>();
@@ -94,8 +95,9 @@ public class PlayerCtrl : MonoBehaviourPunCallbacks
         spriteRenderer.flipX = invertSprite ? IsGoingRight : !IsGoingRight;
     }
 
-    private void OnDead()
-    {
+
+    private void OnDead() {
+        scoreCtrl.Add(1000);
         CanMove = false;
         particles.Play();
         AudioSource.PlayClipAtPoint(dieSound, particles.transform.position);
