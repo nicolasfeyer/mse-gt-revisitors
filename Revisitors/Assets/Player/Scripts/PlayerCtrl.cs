@@ -119,6 +119,14 @@ public class PlayerCtrl : MonoBehaviour
         }
         
     }
+    private void OnCollisionEnter2D(Collision2D collision) {
+        PlayerKiller pk = collision.gameObject.GetComponent<PlayerKiller>();
+        if (pk != null) {
+            OnDead();
+            return;
+        }
+    }
+
 }
 
 //interface IOnPlayerDead {
