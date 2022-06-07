@@ -428,7 +428,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7d50289ca15498221a9e76370cc0b511, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxPlayersPerRoom: 1
+  maxPlayersPerRoom: 2
   playBtn: {fileID: 778614684}
 --- !u!1 &760988894
 GameObject:

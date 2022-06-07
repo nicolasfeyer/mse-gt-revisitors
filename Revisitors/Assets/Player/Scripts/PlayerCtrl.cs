@@ -87,7 +87,7 @@ public class PlayerCtrl : MonoBehaviourPunCallbacks
             return;
         }
         if (Input.GetKeyDown(KeyCode.R))
-            OnDead();
+            OnDead(true);
     }
 
     public void SetDirectionRight(bool isRight)
@@ -97,14 +97,19 @@ public class PlayerCtrl : MonoBehaviourPunCallbacks
     }
 
 
-    private void OnDead() {
+    private void OnDead(bool local) {
         scoreCtrl.Add(1000);
         CanMove = false;
         particles.Play();
         AudioSource.PlayClipAtPoint(dieSound, particles.transform.position);
         spriteRenderer.enabled = false;
-        onPlayerDeads.ForEach(x => x.OnPlayerDeath());
-        StartCoroutine(Respawn());
+
+        if (local){
+            onPlayerDeads.ForEach(x => x.OnPlayerDeath());
+            StartCoroutine(RespawnLocal());
+        }else{
+            StartCoroutine(Respawn());
+        }
     }
 
     public void EndGame()
@@ -112,13 +117,27 @@ public class PlayerCtrl : MonoBehaviourPunCallbacks
         CanMove = false;
     }
 
-    private IEnumerator Respawn()
+    private IEnumerator RespawnLocal()
     {
         yield return new WaitForSeconds(particles.main.duration);
         GameManager.instance.RespawnPlayer();
         spriteRenderer.enabled = true;
         particles.Stop();
         CanMove = true;
+        ennemiesController.ReactivateEnnemies();
+        //GameObject[] li = UnityEngine.Object.FindObjectsOfType<WeakSpot>();
+        //foreach (var i in li)
+        //{
+        //    i.transform.parent.transform.SetActive(true);
+        //}
+    }
+
+    private IEnumerator Respawn()
+    {
+        yield return new WaitForSeconds(particles.main.duration);
+        spriteRenderer.enabled = true;
+        particles.Stop();
+        //CanMove = true;
         ennemiesController.ReactivateEnnemies();
         //GameObject[] li = UnityEngine.Object.FindObjectsOfType<WeakSpot>();
         //foreach (var i in li)
@@ -139,8 +158,10 @@ public class PlayerCtrl : MonoBehaviourPunCallbacks
 
     private void OnTriggerEnter2D(Collider2D collision) {
         PlayerKiller pk = collision.GetComponent<PlayerKiller>();
+        PhotonView pv = GetComponent<PhotonView>();
+
         if (pk != null) {
-            OnDead();
+            OnDead(pv.IsMine);
             return;
         }
 
