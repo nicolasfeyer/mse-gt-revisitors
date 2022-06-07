@@ -173,7 +173,6 @@ public class PlayerCtrl : MonoBehaviourPunCallbacks
         }
         
     }
-    
 }
 
 //interface IOnPlayerDead {
