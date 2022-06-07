@@ -2,7 +2,9 @@
 
 ## Synopsis
 
-Salut à toi Astronaute, Baptiste le complotiste t'a fait boire une potion qui t'a téléporté au moyen-âge.
+Salut à toi Astronaute, Baptiste le complotiste t'a fait boire une potion qui t'a téléporté au moyen-âge.<br/>
+Affronte les dangers de ce monde et peut-être tu sauras retrouver la potion qui te permettra de rentrer dans ton époque.<br/>
+Bonne chance
 
 
 ## Gameplay
